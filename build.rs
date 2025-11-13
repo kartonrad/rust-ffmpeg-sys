@@ -1069,8 +1069,10 @@ fn main() {
         vec![ffmpeg_dir.join("include")]
     } else if let Some(paths) = try_vcpkg(statik) {
         println!("== VCPKG USED SUCCESSFULLY ==");
-        // vcpkg doesn't detect the "system" dependencies
-        if statik {
+        let target_os = env::var("CARGO_CFG_TARGET_OS").unwrap();
+
+        // vcpkg doesn't detect the "system" dependencies for windows
+        if statik && target_os == "windows" {
             if cfg!(feature = "avcodec") || cfg!(feature = "avdevice") {
                 println!("cargo:rustc-link-lib=ole32");
             }
