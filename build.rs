@@ -203,7 +203,8 @@ fn get_ffmpeg_target_os() -> String {
 /// Find the sysroot required for a cross compilation by ffmpeg **and** bindgen
 /// @see https://github.com/rust-lang/rust-bindgen/issues/1229
 fn find_sysroot() -> Option<String> {
-    if env::var("CARGO_FEATURE_BUILD").is_err() || env::var("HOST") == env::var("TARGET") {
+    // env::var("CARGO_FEATURE_BUILD").is_err() ||*/
+    if env::var("HOST") == env::var("TARGET") {
         return None;
     }
 
@@ -1568,8 +1569,10 @@ fn main() {
         .parse_callbacks(Box::new(Callbacks));
 
     if let Some(sysroot) = sysroot.as_deref() {
-        println!("Using sysroot: {sysroot}");
+        println!("-> Using sysroot: {sysroot}");
         builder = builder.clang_arg(format!("--sysroot={sysroot}"));
+    } else {
+        println!("-> Not using a sysroot...");
     }
 
     // The input headers we would like to generate
