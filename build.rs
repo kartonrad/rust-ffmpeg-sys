@@ -1062,6 +1062,7 @@ fn main() {
         link_to_libraries(statik);
         vec![ffmpeg_dir.join("include")]
     } else if let Some(paths) = try_vcpkg(statik) {
+        println!("== VCPKG USED SUCCESSFULLY ==");
         // vcpkg doesn't detect the "system" dependencies
         if statik {
             if cfg!(feature = "avcodec") || cfg!(feature = "avdevice") {
@@ -1445,9 +1446,19 @@ fn main() {
         ],
     );
 
+    let mut argstring = String::new();
+
     let clang_includes = include_paths
         .iter()
-        .map(|include| format!("-I{}", include.to_string_lossy()));
+        .map(|include| format!("-I{}", include.to_string_lossy()))
+        .map(|string| {
+            argstring.push_str(&string);
+            string
+        })
+        .collect::<Vec<_>>();
+
+    println!("== Running Bindgen ==");
+    println!("Clang Arguments: {argstring}");
 
     // The bindgen::Builder is the main entry point
     // to bindgen, and lets you build up options for
@@ -1552,6 +1563,7 @@ fn main() {
         .parse_callbacks(Box::new(Callbacks));
 
     if let Some(sysroot) = sysroot.as_deref() {
+        println!("Using sysroot: {sysroot}");
         builder = builder.clang_arg(format!("--sysroot={sysroot}"));
     }
 
