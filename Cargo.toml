@@ -25,7 +25,7 @@ pkg-config = "0.3"
 bindgen    = { version = "0.70", default-features = false, features = ["runtime"] }
 
 [target.'cfg(target_env = "msvc")'.build-dependencies]
-vcpkg = "0.2"
+vcpkg = { git = "ssh://git@github.com/kartonrad/vcpkg-rs.git", branch = "master" }
 
 [features]
 default  = ["avcodec", "avdevice", "avfilter", "avformat", "swresample", "swscale"]
