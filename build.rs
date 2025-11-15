@@ -334,8 +334,16 @@ fn build(sysroot: Option<&str>) -> io::Result<()> {
         configure.arg("--extra-cflags=-march=native -mtune=native");
     }
 
+    if env::var("CARGO_CFG_TARGET_OS").as_deref() == Ok("android") {
+        // essential libraries on android
+        println!("cargo:rustc-link-lib=dylib=mediandk");
+        //println!("cargo:rustc-link-lib=dylib=OMX_Core");
+        //println!("cargo:rustc-link-lib=dylib=OCore");
+        println!("cargo:rustc-link-lib=dylib=vulkan");
+    }
+
     if env::var("CARGO_CFG_TARGET_OS").as_deref() == Ok("windows") {
-        // essential librareis on windowsw
+        // essential libraries on windows
         println!("cargo:rustc-link-lib=dylib=ole32");
         println!("cargo:rustc-link-lib=dylib=oleaut32");
         println!("cargo:rustc-link-lib=dylib=gdi32");
